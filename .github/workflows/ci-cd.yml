@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: pytest
+      - name: Lint and format checks
+        run: black --check .
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # This job waits for the build job to complete
+    steps:
+      - name: Login to GCP
+        uses: google-auth/actions@v2
+        with:
+          credentials: ${{ secrets.GCP_KEY_FILE }}
+      - name: Build Docker image
+        run: docker build -t my-fastapi-app .  # Replace 'my-fastapi-app' with your desired image name
+
+      - name: Push Docker image to GCP Container Registry
+        uses: google/cloud-actions/docker-push@v2
+        with:
+          service_account_credentials: ${{ secrets.GCP_KEY_FILE }}
+          registry: gcr.io  # Update if using a different registry
+          repository: your-project-id/my-fastapi-app  # Replace with your project ID and image name
+
+      - name: Deploy to GCP VM (replace with your VM details)
+        run: |
+          gcloud compute ssh your-vm-name --zone your-vm-zone  \
+            --command="docker pull gcr.io/your-project-id/my-fastapi-app:latest && docker run -d -p 8000:8000 gcr.io/your-project-id/my-fastapi-app:latest"
