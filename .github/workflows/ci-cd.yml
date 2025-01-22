@@ -37,9 +37,9 @@ jobs:
         with:
           service_account_credentials: ${{ secrets.GCP_KEY_FILE }}
           registry: gcr.io  # Update if using a different registry
-          repository: your-project-id/my-fastapi-app  # Replace with your project ID and image name
+          repository: sodium-mountain-448522-j4/my-fastapi-app  # Replace with your project ID and image name
 
       - name: Deploy to GCP VM (replace with your VM details)
         run: |
           gcloud compute ssh your-vm-name --zone your-vm-zone  \
-            --command="docker pull gcr.io/your-project-id/my-fastapi-app:latest && docker run -d -p 8000:8000 gcr.io/your-project-id/my-fastapi-app:latest"
+            --command="docker pull gcr.io/sodium-mountain-448522-j4/my-fastapi-app:latest && docker run -d -p 8000:8000 gcr.io/sodium-mountain-448522-j4/my-fastapi-app:latest"
