@@ -41,5 +41,5 @@ jobs:
 
       - name: Deploy to GCP VM (replace with your VM details)
         run: |
-          gcloud compute ssh your-vm-name --zone your-vm-zone  \
+          gcloud compute ssh instance-20250123-210853 --zone us-east1-d  \
             --command="docker pull gcr.io/sodium-mountain-448522-j4/my-fastapi-app:latest && docker run -d -p 8000:8000 gcr.io/sodium-mountain-448522-j4/my-fastapi-app:latest"
